@@ -22,8 +22,11 @@ export default class Post extends Component {
 
 		const { avatar, comment } = this.props;
 
-		return (
+		if (comment === '3') {
+			undefined();
+		}
 
+		return (
 			<Consumer>
 				{
 					( context ) => (

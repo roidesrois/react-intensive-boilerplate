@@ -9,6 +9,8 @@ import Styles from './styles.m.css';
 import { getUniqueID } from '../../instruments';
 import avatar from '../../theme/assets/homer.png';
 import Counter from '../Counter';
+import Catcher from '../Catcher';
+import Spinner from '../Spinner';
 
 const config = {
 	avatar,
@@ -26,6 +28,7 @@ export default class Feed extends Component {
 
 	state = {
 		posts: [],
+		isSpinnig: true,
 		//posts: [{id: 'asdasdds', comment: 'Hello1'}, {id: 'asdasddsa', comment: 'Hello2'}, {id: 'sadasd', comment: 'Hello3'}],
 	}
 
@@ -45,18 +48,20 @@ export default class Feed extends Component {
 	render () {
 		//this.props
 		const { avatar, currentUserFirstName, currentUserLastName, comment } = this.props;
-		const { posts } = this.state;
+		const { posts, isSpinnig } = this.state;
 
 		const postsJSX = posts.map((post) => (
+			/* key vinosim navverx chobi react mog sledit' za izmineniem etogo komponenta*/
+			<Catcher 
+				key = { post.id }> 
 				<Post
-					key = { post.id }
 					avatar = { avatar }
 					comment = { post.comment }
 					_deletePost = { this._deletePost }  
 					postID = { post.id }
 				/>
+			</Catcher>
 		));
-
 
 		return (
 			<section className = { Styles.feed } >
@@ -67,6 +72,7 @@ export default class Feed extends Component {
 				/>
 				<Counter count = { posts.length } />
 				{ postsJSX }
+				<Spinner isSpinnig = { isSpinnig } />
 			</section>
 		);
 	}
