@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import { string } from 'prop-types';
-import { Consumer } from '../../HOC/withProfile';
+import { withProfile } from '../../HOC/withProfile';
 
 import Styles from './styles.m.css';
 
-export default class Composer extends Component {
+export class Composer extends Component {
 
 	static propTypes = {
 		avatar: string.isRequired,
@@ -64,34 +64,30 @@ export default class Composer extends Component {
 	}
 
 	render () {
-		const { avatar } = this.props;
+		const { avatar, currentUserFirstName } = this.props;
 		const { comment } = this.state;
 
 		console.log( comment );
 
 		return (
 			//Figurnie skobki posle <Consumer> nujno opuskat' na stroku nije
-			<Consumer>
-				{
-					( context ) => (
-							<section className = { Styles.composer }>
-								<img src = { avatar } />
-								<form
-									onSubmit = { this._handleFormSubmit } 
-								>
-									<textarea 
-										placeholder = { `What's on your mind, ${context.currentUserFirstName}` }
-										value = { comment }
-										onChange = { this._handleTextAreaChange }
-										onCopy = { this._handleTextAreaCopy }
-										onKeyPress = { this._handleTextareaKeyPress }
-								 	/>
-									<input type = 'submit' value = 'Post' />
-								</form>
-							</section>
-					)
-				}
-			</Consumer>
+				<section className = { Styles.composer }>
+					<img src = { avatar } />
+					<form
+						onSubmit = { this._handleFormSubmit } 
+					>
+						<textarea 
+							placeholder = { `What's on your mind, ${currentUserFirstName}` }
+							value = { comment }
+							onChange = { this._handleTextAreaChange }
+							onCopy = { this._handleTextAreaCopy }
+							onKeyPress = { this._handleTextareaKeyPress }
+					 	/>
+						<input type = 'submit' value = 'Post' />
+					</form>
+				</section>
 		);
 	}
 }
+
+export default withProfile(Composer);

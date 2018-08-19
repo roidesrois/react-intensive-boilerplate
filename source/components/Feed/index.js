@@ -8,6 +8,7 @@ import { Provider } from '../../HOC/withProfile';
 import Styles from './styles.m.css';
 import { getUniqueID } from '../../instruments';
 import avatar from '../../theme/assets/homer.png';
+import Counter from '../Counter';
 
 const config = {
 	avatar,
@@ -64,6 +65,7 @@ export default class Feed extends Component {
 					avatar = { avatar }  
 					_createPost = { this._createPost }
 				/>
+				<Counter count = { posts.length } />
 				{ postsJSX }
 			</section>
 		);
