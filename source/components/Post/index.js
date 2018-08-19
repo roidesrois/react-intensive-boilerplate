@@ -6,12 +6,21 @@ import Styles from './styles.m.css';
 
 export default class Post extends Component {
 	static propTypes = {
-		avatar: 				string.isRequired
+		avatar: 				string.isRequired,
+		comment: 				string.isRequired,
 	};
+
+	// this._deletePost
+	_deletePost = (e) => {
+		const { _deletePost, postID } = this.props;
+
+		// this.props._deletePost
+		_deletePost(postID);
+	}
 
 	render () {
 
-		const { avatar } = this.props;
+		const { avatar, comment } = this.props;
 
 		return (
 
@@ -19,14 +28,14 @@ export default class Post extends Component {
 				{
 					( context ) => (
 						<section className = { Styles.post } >
-							<span className = { Styles.cross } />
+							<span className = { Styles.cross } onClick = { this._deletePost } />
 							<img src = { this.props.avatar } />
 							{/* 
 								<a> { currentUserFirstName } { currentUserLastName }</a>
 							*/}
 							<a> { `${context.currentUserFirstName } ${context.currentUserLastName }` }</a>
 							<time> { moment().locale('uk').format('MMMM D h:mm:ss a') } </time>
-							<p>Hello</p>
+							<p>{ comment }</p>
 						</section>
 					)
 				}
