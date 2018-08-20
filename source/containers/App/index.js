@@ -12,7 +12,7 @@ const config = {
 	currentUserLastName: 'Салимов',
 };
 
-
+//pri izminenii obnovlyaet block bez perezagruzki
 @hot(module)
 export default class App extends Component {
 	render () {

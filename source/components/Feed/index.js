@@ -12,7 +12,8 @@ import Counter from '../Counter';
 import Catcher from '../Catcher';
 import Spinner from '../Spinner';
 import { api } from '../../REST/api';
-
+import { socket } from '../../socket';
+import { GROUP_ID } from '../../REST';
 
 export default class Feed extends Component {
 	static propTypes = {
@@ -29,6 +30,8 @@ export default class Feed extends Component {
 
 	componentDidMount () {
 		this._fetchPostsAsync();
+
+		socket.emit('join', GROUP_ID);
 	}
 
 	_setPostsFetchingState = (isSpinnig) => {
@@ -91,6 +94,22 @@ export default class Feed extends Component {
 		}
 	}
 
+	_likePostAsync = async (id) => {
+		try {
+			this._setPostsFetchingState(true);
+
+			const likePost = await api.likePost(id);
+
+			this.setState(({ posts }) => ({
+				posts: posts.map((post) => post.id === likePost.id ? likePost: post),
+			}));
+		} catch (error) {
+			console.error(error);
+		} finally {
+			this._setPostsFetchingState(false);
+		}
+	}
+
 	// _deletePost = (postID) => {
 	// 	this.setState(({posts}) => ({ //Destruktizaciya, pri vizove setState, pod kapotom peredaetsya prevState. Pri pomoshi destruktizaciya v prevState ishetsya posts, i izvlekaetsya 
 	// 		posts: posts.filter(post => post.id !== postID)
@@ -109,6 +128,7 @@ export default class Feed extends Component {
 				<Post
 					{ ...post }
 					_removePostAsync = { this._removePostAsync }
+					_likePostAsync = { this._likePostAsync }
 				/>
 			</Catcher>
 		));

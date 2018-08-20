@@ -3,12 +3,15 @@ import { string, func } from 'prop-types';
 import moment from 'moment';
 import { withProfile } from '../../HOC/withProfile';
 import Styles from './styles.m.css';
+import Like from '../Like';
 
 @withProfile
 export default class Post extends Component {
 	static propTypes = {
 		avatar: 				string.isRequired,
 		comment: 				string.isRequired,
+        firstName:  			string.isRequired,
+        lastName: 				string.isRequired,
 		_removePostAsync: 		func.isRequired
 	};
 
@@ -38,11 +41,14 @@ export default class Post extends Component {
 	render () {
 
 		const { 
+			id,
 			avatar, 
 			comment, 
 			firstName, 
 			lastName, 
-			created
+			created,
+			likes,
+			_likePostAsync,
 		} = this.props;
 
 		const cross = this._getCross();
@@ -62,6 +68,11 @@ export default class Post extends Component {
 					<a> { `${firstName } ${lastName }` }</a>
 					<time> { moment.unix(created).format('MMMM D h:mm:ss a') } </time>
 					<p>{ comment }</p>
+					<Like 
+						id = { id }
+						likes = { likes }
+						_likePostAsync = { _likePostAsync } 
+					/>
 				</section>
 		);
 	}
