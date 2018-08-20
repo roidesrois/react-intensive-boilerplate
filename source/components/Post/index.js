@@ -1,49 +1,68 @@
 import React, { Component } from 'react';
-import { string } from 'prop-types';
+import { string, func } from 'prop-types';
 import moment from 'moment';
-import { Consumer } from '../../HOC/withProfile';
+import { withProfile } from '../../HOC/withProfile';
 import Styles from './styles.m.css';
 
+@withProfile
 export default class Post extends Component {
 	static propTypes = {
 		avatar: 				string.isRequired,
 		comment: 				string.isRequired,
+		_removePostAsync: 		func.isRequired
 	};
 
 	// this._deletePost
 	_deletePost = (e) => {
-		const { _deletePost, postID } = this.props;
+		const { _removePostAsync, id } = this.props;
 
 		// this.props._deletePost
-		_deletePost(postID);
+		_removePostAsync(id);
 	}
+
+    _getCross () {
+        const {
+            firstName,
+            lastName,
+            currentUserFirstName,
+            currentUserLastName,
+        } = this.props;
+        return `${firstName} ${lastName}` ===  `${currentUserFirstName} ${currentUserLastName}` 
+                ?  <span
+                        className = { Styles.cross }
+                        onClick = { this._deletePost }
+                    />
+                : null;
+    }
 
 	render () {
 
-		const { avatar, comment } = this.props;
+		const { 
+			avatar, 
+			comment, 
+			firstName, 
+			lastName, 
+			created
+		} = this.props;
 
-		if (comment === '3') {
-			undefined();
-		}
+		const cross = this._getCross();
+
+		// if (comment === '3') {
+		// 	undefined();
+		// }
 
 		return (
-			<Consumer>
-				{
-					( context ) => (
-						<section className = { Styles.post } >
-							<span className = { Styles.cross } onClick = { this._deletePost } />
-							<img src = { this.props.avatar } />
-							{/* 
-								<a> { currentUserFirstName } { currentUserLastName }</a>
-							*/}
-							<a> { `${context.currentUserFirstName } ${context.currentUserLastName }` }</a>
-							<time> { moment().locale('uk').format('MMMM D h:mm:ss a') } </time>
-							<p>{ comment }</p>
-						</section>
-					)
-				}
-			</Consumer>
-
+				<section className = { Styles.post } >
+					{/*<span className = { Styles.cross } onClick = { this._deletePost } />*/}
+					{ cross }
+					<img src = { avatar } />
+					{/* 
+						<a> { currentUserFirstName } { currentUserLastName }</a>
+					*/}
+					<a> { `${firstName } ${lastName }` }</a>
+					<time> { moment.unix(created).format('MMMM D h:mm:ss a') } </time>
+					<p>{ comment }</p>
+				</section>
 		);
 	}
 }

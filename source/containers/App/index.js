@@ -8,8 +8,8 @@ import avatar from '../../theme/assets/homer.png';
 
 const config = {
 	avatar,
-	currentUserFirstName: 'Andrey',
-	currentUserLastName: 'Prisniak',
+	currentUserFirstName: 'Руслан',
+	currentUserLastName: 'Салимов',
 };
 
 

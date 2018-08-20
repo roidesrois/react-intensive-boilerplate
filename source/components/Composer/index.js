@@ -36,7 +36,7 @@ export class Composer extends Component {
 	}
 
 	_createPost() {
-		const { _createPost } = this.props;
+		const { _createPostAsync } = this.props;
 		const { comment } = this.state;
 
 
@@ -44,7 +44,7 @@ export class Composer extends Component {
 			return null;
 		};
 
-		_createPost(comment);
+		_createPostAsync(comment);
 		this.setState({
 			comment: '',
 		});

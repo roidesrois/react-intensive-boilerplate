@@ -11,12 +11,8 @@ import avatar from '../../theme/assets/homer.png';
 import Counter from '../Counter';
 import Catcher from '../Catcher';
 import Spinner from '../Spinner';
+import { api } from '../../REST/api';
 
-const config = {
-	avatar,
-	currentUserFirstName: 'Andrey',
-	currentUserLastName: 'Prisniak',
-};
 
 export default class Feed extends Component {
 	static propTypes = {
@@ -25,25 +21,81 @@ export default class Feed extends Component {
 		currentUserLastName: 	string.isRequired,
 	};
 
-
 	state = {
 		posts: [],
-		isSpinnig: true,
+		isSpinnig: false,
 		//posts: [{id: 'asdasdds', comment: 'Hello1'}, {id: 'asdasddsa', comment: 'Hello2'}, {id: 'sadasd', comment: 'Hello3'}],
 	}
 
-	_createPost = (comment) => {
-		this.setState((prevState) => ({
-			posts: [{ id: getUniqueID(), comment }, ...prevState.posts],
-		})); 
+	componentDidMount () {
+		this._fetchPostsAsync();
+	}
+
+	_setPostsFetchingState = (isSpinnig) => {
+		this.setState({
+			isSpinnig,
+		});
+	}
+
+	_fetchPostsAsync = async () => {
+		try {
+			this._setPostsFetchingState(true);
+
+			// dannie posti uje prishli s servera
+			const posts = await api.fetchPosts();
+
+			this.setState(() => ({
+				posts,
+			}))
+		} catch (error) {
+			console.error(error);
+		} finally {
+			this._setPostsFetchingState(false);
+		}
+	}
+
+	_createPostAsync = async (comment) => {
+		try {
+			this._setPostsFetchingState(true);
+
+			const post = await api.createPost(comment);
+
+			this.setState((prevState) => ({
+				posts: [ post, ...prevState.posts ],
+			})); 
+		} catch (error) {
+			console.error();
+		} finally {
+			this._setPostsFetchingState(false);
+		}
+
+		// this.setState((prevState) => ({
+		// 	posts: [{ id: getUniqueID(), comment }, ...prevState.posts],
+		// })); 
 		// esli ne ukazat' () to func ne budet vozvrashat' znachenie
 	}
 
-	_deletePost = (postID) => {
-		this.setState(({posts}) => ({ //Destruktizaciya, pri vizove setState, pod kapotom peredaetsya prevState. Pri pomoshi destruktizaciya v prevState ishetsya posts, i izvlekaetsya 
-			posts: posts.filter(post => post.id !== postID)
-		})); 
+	_removePostAsync = async (id) => {
+		try {
+			this._setPostsFetchingState(true);
+
+			await api.removePost(id);
+
+			this.setState(({ posts }) => ({
+				posts: posts.filter((post) => post.id !== id),
+			}));
+		} catch (error) {
+			console.error(error);
+		} finally {
+			this._setPostsFetchingState(false);
+		}
 	}
+
+	// _deletePost = (postID) => {
+	// 	this.setState(({posts}) => ({ //Destruktizaciya, pri vizove setState, pod kapotom peredaetsya prevState. Pri pomoshi destruktizaciya v prevState ishetsya posts, i izvlekaetsya 
+	// 		posts: posts.filter(post => post.id !== postID)
+	// 	})); 
+	// }
 
 	render () {
 		//this.props
@@ -55,10 +107,8 @@ export default class Feed extends Component {
 			<Catcher 
 				key = { post.id }> 
 				<Post
-					avatar = { avatar }
-					comment = { post.comment }
-					_deletePost = { this._deletePost }  
-					postID = { post.id }
+					{ ...post }
+					_removePostAsync = { this._removePostAsync }
 				/>
 			</Catcher>
 		));
@@ -68,7 +118,7 @@ export default class Feed extends Component {
 				<StatusBar />
 				<Composer 
 					avatar = { avatar }  
-					_createPost = { this._createPost }
+					_createPostAsync = { this._createPostAsync }
 				/>
 				<Counter count = { posts.length } />
 				{ postsJSX }
