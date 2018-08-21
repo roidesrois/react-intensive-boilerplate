@@ -23,6 +23,11 @@ export default class Post extends Component {
 		_removePostAsync(id);
 	}
 
+	shouldcomponentupdate(prevProps) {
+		return prevProps.likes.length !== this.props.likes;
+		//return false;
+	}
+
     _getCross () {
         const {
             firstName,
@@ -37,6 +42,8 @@ export default class Post extends Component {
                     />
                 : null;
     }
+
+
 
 	render () {
 

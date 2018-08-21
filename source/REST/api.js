@@ -2,7 +2,7 @@ import { MAIN_URL, TOKEN } from './config';
 
 export const api = {
 	async fetchPosts () {
-		const response = await fetch(MAIN_URL, {
+		const response = await fetch(`${MAIN_URL}?size=2`, {
 			method: 'GET',
 		});
 
